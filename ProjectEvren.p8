@@ -23,17 +23,17 @@ end
 
 function p_init()
 	sprites = {
-		up=1, -- up
-		down=2,	-- down
-		left=3, -- left
-		right=4,	-- right
-		up_left=5, -- up left
-		up_right=6, -- up right
-		down_left=7, -- down left
-		down_right=8  -- down right
+		up    = 1,
+		up_right   = 2,
+		right = 3, 
+		down_right = 4,
+		down  = 5,
+		down_left  = 6,
+		left  = 7,
+		up_left    = 8,
 	}
 	
-	angle = {
+	angles = {
 		up    = 0,
 		up_right   = 45,
 		right = 90,
@@ -44,52 +44,64 @@ function p_init()
 		down_right = 225
 	}
 	
-	cords = {
-		x=63,
-		y=63,
-		speedx=0,
-		speedy=0,
-	}
+	x=63
+	y=63
+	dx=0
+	dy=0
 	
 	sprite = sprites.up
+	angle = angles.up--may need for later
+	
+	thrust = 0.8
 end
 
 
-function p_update()
-
-	if btn(➡️) then
-	sprite=sprites.left
-		cords.speedx =
-		cords.x+=cords.speedx
-	end
+function p_update()	
+			
 	
-	if else btn(⬅️) then	
-	 cords.speedx =
-		cords.x-=cords.speedx
-	end
+	if btn(⬅️) then
+		sprite = sprites.left
+	 dx = dx - thrust
+	 x = x + dx
+	    
+	elseif btn(➡️) then
+		sprite = sprites.right
+		dx = dx + thrust
+		x = x + dx
+	    
+	elseif btn(⬆️) then
+		sprite = sprites.up
+	 dy = dy - thrust
+	 y = y + dy
+	    
+	elseif btn(⬇️) then
+		sprite = sprites.down
+	 dy = dy + thrust
+	 y = y + dy
 	
-	if else btn(⬇️) then
-		cords.speedy = 
-		cords.y+=cords.speedy
-	end
-	
-	if else btn(⬆️) then
- 	cords.speedy = 
-	 cords.y-=cords.speedy
-	end
-	
-	
-	if else then 
+	elseif (btn(⬆️) and btn(➡️)) then 
 		
+	elseif (btn(➡️) and btn(⬇️)) then 
+	
+	elseif (btn(⬇️) and btn(⬅️)) then 
+	
+	elseif (btn(⬅️) and btn(⬆️)) then 
+		
+	
+	
 	end
-	-- ...
-
+	
+	dx = dx * 0.1
+	dy = dy * 0.1
+	
 end
 
 
 function p_draw()
-	spr(sprite, cords.x, cords.y)
-
+	print(dx, 2)
+	print(dy, 1)
+	
+	spr(sprite, x, y)
 end
 
 -->8
