@@ -6,31 +6,30 @@ __lua__
 function _init()
 	cls()
 	
-	p_init()
-	t_init()
+	plr_init()
+	trail_init()
+	ui_init()
 end
 
 
 function _update()
-	p_update()
-	camera(p.x-64, p.y-64)
-	t_update()
-	
-	
+	plr_update()
+	trail_update()
+	ui_update()
 end	
 
 
 function _draw()
 	cls()
-	
-	map(0, 0, 0, 0, 128, 128)
-	p_draw()
-	t_draw()
+
+	plr_draw()
+	ui_draw()
+	trail_draw()
 end
 -->8
 -- player
 
-function p_init()	
+function plr_init()	
 	p = {
 		angle_deg= 0,
 		angle = 0/360,
@@ -50,7 +49,7 @@ function p_init()
 end
 	
 	
-function p_update()
+function plr_update()
 	
 	if btn(⬆️) then
 		p.dx += cos(p.angle) * p.thrust     
@@ -80,24 +79,79 @@ function p_update()
 end
 	
 	
-function p_draw()
+function plr_draw()
 		spr(1, p.x, p.y)
-		print(p.angle_degrees, 10)
+		
 end
 
 -->8
--- bodies
+-- ui
+
+function ui_init()
+	camx = p.x-64
+	camy = p.y-64
+	
+	sel_item = 1
+	clr_selected = 11
+	clr_unselected = 5
+	
+	main_menu = {
+		items = {
+			"new", 
+			"continue",
+			"options"
+		}
+	}
+	
+	z_menu = {
+		items = {
+			"engine mode",
+			"stellar map",
+			"options",
+			"save"
+			"exit to menu"
+		}
+	}
+	
+	options = {
+		"mini map",
+		"stellar map",
+		"orbit prediction"
+	}
+end
+
+
+function ui_update()
+	camx = p.x-64
+	camy = p.y-64
+	
+	if btn(z) then
+		
+	end
+	
+end
+
+function ui_draw()
+	camera(camx, camy)
+	map(0, 0, 0, 0, 128, 128)
+	
+	
+	
+	print(p.angle_degrees, 
+							camx+8, camy+8, 10)
+end
 -->8
--- gravity
+-- bodies, map
 -->8
 -- render
 
 function pd_rotate(
 																			x,y,
-																			rot,
+	--[[angle 0-1]]			rot,
 																			mx,my,
 																			w,
-																			flip1, scale
+																			flip1, 
+																			scale
 																		)
 			
  scale = scale or 1
@@ -107,7 +161,7 @@ function pd_rotate(
  local cs = cos(rot) * .125 
  																	/ scale
  local ss = sin(rot) * .125 
- 																	/ scale
+ 												    	/ scale
  
  local sx = mx + cs * -w
  local sy = my + ss * -w
@@ -116,45 +170,47 @@ function pd_rotate(
 
  local halfw = -w
  
- for py=y-w, y+w do
+ for py = y-w, y+w do
   tline(
 				x-hx,        py, 
 				x+hx,        py, 
 				sx-ss*halfw, sy+cs*halfw, 
 				cs,          ss
 		)
-  halfw+=1
+  halfw += 1
  end
 end
 -->8
 -- trail
 
-function t_init()
+function trail_init()
 	trail = {}
 	colors = {7,10,9,5}	
 end
 
 
-function t_update()
+function trail_update()
 
 	if btn(⬆️) then
 		add(trail, {
-			x=p.x+4,
-			y=p.y+4,
-			l=4,
-			c=0,
-			r=0
+			x = p.x + 4,
+			y = p.y + 4,
+			l = 4,
+			c = 0,
+			r = 0
 		})
 	end
 	
 	for part in all(trail) do
-		part.l-=1/ 1--increase to increase n of trail
+		--increase divider
+		--to increase n of trail
+		part.l -= 1/ 1
 		
-		part.r+=rnd(1)
-		if (part.r>2) part.r=2
+		part.r += rnd(1)
+		if (part.r>2) part.r = 2
 		
-		part.c+=1
-		if (part.c>4) part.c=4
+		part.c += 1
+		if (part.c>4) part.c = 4
 		
 		--leave a trace
 		--by inverting ship speed
@@ -163,17 +219,16 @@ function t_update()
 			part.y += p.dy 
 		end
 		
-		if part.l < 0	then
-				del(trail, part)
-		end
+		if(part.l < 0)	del(trail, part)
 	end
+	
 end
 
-function t_draw()
+
+function trail_draw()
 	for part in all(trail) do
 		circfill(part.x, part.y, part.r, colors[part.c])
 	end
-	
 end
 __gfx__
 000000000000000000000000050000000500000000000000000000000088880000000aaaaaa00000000000000000000000000000000000000000000000000000
